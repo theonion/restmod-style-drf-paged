@@ -3,7 +3,7 @@
 angular.module('restmod.styles.drfPaged', [
   'restmod'
 ])
-  .factory('DjangoDRFPagedApi', function (_, restmod, inflector) {
+  .factory('DjangoDRFPagedApi', function (restmod, inflector) {
     var singleRoot = 'root';
     var manyRoot = 'results';
 
