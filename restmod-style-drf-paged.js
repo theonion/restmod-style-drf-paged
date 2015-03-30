@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('restmod.styles.drfPaged', [
-  'lodash',
   'restmod'
 ])
   .factory('DjangoDRFPagedApi', function (_, restmod, inflector) {
