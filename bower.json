@@ -1,0 +1,11 @@
+{
+  "name": "restmod-style-drf-paged",
+  "main": "restmod-style-drf-paged.js",
+  "version": "0.0.1",
+  "authors": [
+    "Webtech <webtech@theonion.com>"
+  ],
+  "description": "Django REST Framework paged restmod style",
+  "license": "MIT",
+  "private": true
+}
