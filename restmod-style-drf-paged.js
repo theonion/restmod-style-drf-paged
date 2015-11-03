@@ -33,7 +33,7 @@ angular.module('restmod.styles.drfPaged', [
 
       $hooks: {
         'before-request': function (_req) {
-          if (!_req.url.match(/\/\?/)) {
+          if (!_req.url.match(/\/$/)) {
             _req.url += '/';
           }
         },
