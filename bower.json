@@ -2,6 +2,7 @@
   "name": "restmod-style-drf-paged",
   "main": "restmod-style-drf-paged.js",
   "version": "0.1.0",
+  "version": "0.0.6",
   "authors": [
     "Webtech <webtech@theonion.com>"
   ],
