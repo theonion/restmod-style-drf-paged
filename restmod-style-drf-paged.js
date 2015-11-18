@@ -23,7 +23,7 @@ angular.module('restmod.styles.drfPaged', [
           $totalCount: 0
         },
 
-        // special snakecase to camelcase renaming
+        // convert backend snake_case to frontend camelCase
         Model: {
           decodeName: inflector.camelize,
           encodeName: function(_v) { return inflector.parameterize(_v, '_'); },
@@ -32,6 +32,9 @@ angular.module('restmod.styles.drfPaged', [
       },
 
       $hooks: {
+        /**
+         * Ensure all request paths end with a slash.
+         */
         'before-request': function (_req) {
           var urlParts = _req.url.split('?');
           var path = urlParts[0];
@@ -41,30 +44,40 @@ angular.module('restmod.styles.drfPaged', [
             _req.url = path + '/' + query;
           }
         },
+        /**
+         * Add a paging parameter before fetching a collection.
+         */
         'before-fetch-many': function (_req) {
-          // add paging parameter here based on collection's $page property
           if (_.isUndefined(_req.params)) {
             _req.params = {};
           }
           _req.params.page = this.$page || 1;
         },
+        /**
+         * Ensure that the data is located under the right key for restmod's
+         *  DefaultPacker.
+         */
         'after-request': function (_req) {
-          // check that response has data we need
-          if (!_.isUndefined(_req.data) && _.isUndefined(_req.data[manyRoot])) {
-            // a dirty hack so we don't have to copy/modify the DefaultPacker:
-            // this is not a collection, make it so the single root is accessible by the packer
-            var newData = {};
-            // check the type of data coming back to properly repack it
+          if (!_.isUndefined(_req.data)) {
             if (_.isArray(_req.data)) {
-              // dealing with an array, use many root
-              newData[manyRoot] = _req.data;
-            } else {
-              // dealing with a single record, use single root
-              newData[singleRoot] = _req.data;
+              // raw data is an array, pack it under manyRoot
+              var reqData = _req.data;
+              _req.data = {};
+              _req.data[manyRoot] = reqData;
+            } else if (
+                _.isUndefined(_req.data[manyRoot]) &&
+                _.isUndefined(_req.data[singleRoot])) {
+              // raw data wasn't pre-packed on the backend with a manyRoot key,
+              //  raw data is a singular object, pack it under singleRoot
+              var reqData = _req.data;
+              _req.data = {};
+              _req.data[singleRoot] = reqData;
             }
-            _req.data = newData;
           }
         },
+        /**
+         * Add a total count property after fetching a collection.
+         */
         'after-fetch-many': function (_req) {
           this.$totalCount = _req.data.count;
         }
